@@ -10,10 +10,11 @@ source:
   sha256: 5122bf4708a031b02db029366184a87c5d0ddd5a327a5884ee6cf0193e599d71
 
 build:
-  number: 1
+  number: 0
   noarch: python
   entry_points:
     - jdiff=jsondiff.cli:main
+    - jsondiff=jsondiff.cli:main_deprecated
   script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv "
 
 requirements:
