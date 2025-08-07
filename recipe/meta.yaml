@@ -1,41 +1,56 @@
 {% set name = "jsondiff" %}
-{% set version = "1.3.0" %}
+{% set version = "2.2.1" %}
 
 package:
-  name: "{{ name|lower }}"
-  version: "{{ version }}"
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 5122bf4708a031b02db029366184a87c5d0ddd5a327a5884ee6cf0193e599d71
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 658d162c8a86ba86de26303cd86a7b37e1b2c1ec98b569a60e2ca6180545f7fe
 
 build:
   number: 0
-  noarch: python
   entry_points:
     - jdiff=jsondiff.cli:main
-    - jsondiff=jsondiff.cli:main_deprecated
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv "
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<38]
 
 requirements:
   host:
     - pip
     - python
+    - setuptools >=64.0.0
+    - setuptools-scm >=8
+    - wheel
   run:
     - python
+    - pyyaml
 
 test:
+  source_files:
+    - tests
   imports:
     - jsondiff
+  requires:
+    - pip
+    - pytest
+    - hypothesis
   commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v tests
     - jdiff --help
 
 about:
-  home: https://github.com/ZoomerAnalytics/jsondiff
+  home: https://github.com/xlwings/jsondiff
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: Diff JSON and JSON-like structures in Python
+  summary: Diff JSON and JSON-like structures in Python.
+  description: Diff JSON and JSON-like structures in Python.
+  doc_url: https://github.com/xlwings/jsondiff/blob/master/README.md
+  dev_url: https://github.com/xlwings/jsondiff
 
 extra:
   recipe-maintainers:
