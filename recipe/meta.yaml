@@ -1,46 +1,39 @@
 {% set name = "jsondiff" %}
-{% set version = "2.2.1" %}
+{% set version = "2.0.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 658d162c8a86ba86de26303cd86a7b37e1b2c1ec98b569a60e2ca6180545f7fe
+  sha256: 2795844ef075ec8a2b8d385c4d59f5ea48b08e7180fce3cb2787be0db00b1fb4
 
 build:
   number: 0
   entry_points:
     - jdiff=jsondiff.cli:main
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [py<38]
 
 requirements:
   host:
     - pip
     - python
-    - setuptools >=64.0.0
-    - setuptools-scm >=8
+    - setuptools
     - wheel
   run:
     - python
-    - pyyaml
 
+# No test_jsondiff.py file found in tests for version 2.0.0
 test:
-  source_files:
-    - tests
   imports:
     - jsondiff
-  requires:
-    - pip
-    - pytest
-    - hypothesis
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -v tests
     - jdiff --help
+  requires:
+    - pip
 
 about:
   home: https://github.com/xlwings/jsondiff
